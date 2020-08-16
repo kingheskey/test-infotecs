@@ -1,11 +1,16 @@
 #dataTable {
     width: 50vw;
-    margin: auto;
+    align-self: left;
     border: 1px solid black;
     text-align: center;
     border-collapse: collapse;
     table-layout: fixed;
-    font-size: 1em;
+    font-size: 0.8em;
+}
+
+th {
+    background-color: gray;
+    height: 50px;
 }
 
 #dataTable td, #dataTable th {
@@ -20,4 +25,24 @@
     overflow: hidden;
     white-space: pre-wrap;
 }
-    
+
+.asc::before {
+    content: "\25b4";
+    display: inline-block;
+}
+
+.desc::before {
+    content: "\25b4";
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    display: inline-block;
+}
+
+#edit-selected {
+    background-color: aqua;
+    width: 30vh;
+    height: 600px;
+    position: absolute;
+    top:0px;
+    right: 0px;
+}
