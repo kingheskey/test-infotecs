@@ -1,11 +1,43 @@
+.wrapper {
+    display: flex;
+    flex:1;
+    position: relative;
+    align-items: center;
+}
+
 #dataTable {
     width: 50vw;
-    align-self: left;
     border: 1px solid black;
     text-align: center;
     border-collapse: collapse;
     table-layout: fixed;
     font-size: 0.8em;
+    height: 60vh;
+}
+
+.change-page {
+    border: solid black;
+    border-width: 0 5px 5px 0;
+    display: inline-block;
+    padding: 3px;
+    height: 20px;
+    width: 20px;
+    margin: 30px;
+    color: black;
+    opacity: 20%;
+}
+
+.change-page:hover {
+    cursor: pointer;
+    opacity: 100%;
+}
+
+#next.change-page {
+    transform: rotate(-45deg);
+}
+
+#previous.change-page {
+    transform: rotate(135deg);
 }
 
 th {
@@ -15,6 +47,11 @@ th {
 
 #dataTable td, #dataTable th {
     border: 1px solid black;
+}
+
+th:hover {
+    cursor: pointer;
+    background-color: darkblue;
 }
 
 .about {
@@ -46,3 +83,12 @@ th {
     top:0px;
     right: 0px;
 }
+
+.hidden {
+    display: none;
+}
+
+.textarea {
+    display: block;
+}
+
