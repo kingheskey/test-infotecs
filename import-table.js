@@ -1,5 +1,3 @@
-/* eslint-disable strict */
-
 'use strict';
 
 // Создание таблицы с id="dataTable" и header id="dataTableHeader"
@@ -10,6 +8,7 @@ const table = document.querySelector('#dataTable');
 const thead = document.querySelector('#dataTableHeader');
 const tbody = table.querySelector('tbody');
 
+// Текущая страница таблицы
 let currentPage = 0;
 
 // Вставка элемента-обертки для таблицы
@@ -71,9 +70,7 @@ async function getData(url) {
 
 /* Сортировка колонны по значениям
 Создает классы asc - для сортировки по возрастанию и desc - для сортировки по убыванию */
-// eslint-disable-next-line no-unused-vars
 function tableSortColumn() {
-  // eslint-disable-next-line no-restricted-globals
   const target = event.currentTarget;
   const targetId = Array.from(thead.cells).indexOf(target);
 
@@ -98,8 +95,8 @@ function tableSortColumn() {
   // 1 условие
   if (target.classList.contains('asc')) {
     dataRows.sort((rowA, rowB) => {
-      if (rowA.cells[targetId].innerHTML.toLowerCase()
-      < rowB.cells[targetId].innerHTML.toLowerCase()) {
+      if (rowA.cells[targetId].innerHTML.toLowerCase() <
+        rowB.cells[targetId].innerHTML.toLowerCase()) {
         return -1;
       }
       return 1;
@@ -110,8 +107,8 @@ function tableSortColumn() {
   } else {
     target.classList.toggle('desc');
     dataRows.sort((rowA, rowB) => {
-      if (rowA.cells[targetId].innerHTML.toLowerCase()
-      > rowB.cells[targetId].innerHTML.toLowerCase()) {
+      if (rowA.cells[targetId].innerHTML.toLowerCase() >
+        rowB.cells[targetId].innerHTML.toLowerCase()) {
         return -1;
       }
       return 1;
@@ -143,13 +140,11 @@ function setHidden(data) {
   }
 }
 
-// eslint-disable-next-line no-unused-vars
 function nextPage() {
   currentPage++;
   setHidden(Array.from(table.rows).slice(1));
 }
 
-// eslint-disable-next-line no-unused-vars
 function previousPage() {
   currentPage--;
   setHidden(Array.from(table.rows).slice(1));
@@ -162,11 +157,10 @@ function createVisibilityForm() {
     <label for="checkbox-${id}">${[elem.textContent]}</label><br>`);
   });
   visibilityForm.insertAdjacentHTML('afterbegin', '<h1 class ="heading">Настроить видимость столбцов</h1>');
-  // eslint-disable-next-line no-unused-vars
 }
 
+// Устанавливает видимость столбца в соотв. с выбранным чекбоксом
 function setVisibility() {
-  // eslint-disable-next-line no-restricted-globals
   const target = event.currentTarget;
   const targetId = Array.from(visibilityForm.elements).indexOf(target);
   const dataRows = Array.from(table.rows);
@@ -217,6 +211,7 @@ function selectRow() {
 
 // Добавить новые данные в таблицу
 function submitDataChange() {
+  // Отмена отправки формы на сервер
   event.preventDefault();
 
   // targetId - Id строки у которой установлен атрибут changable-now
