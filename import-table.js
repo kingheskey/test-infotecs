@@ -17,8 +17,11 @@ document.body.insertAdjacentHTML('afterbegin', '<div class = "wrapper"></div>');
 const wrapper = document.querySelector('.wrapper');
 wrapper.appendChild(table);
 
-wrapper.insertAdjacentHTML('afterend', '<form id="visibility-form"></form>');
-wrapper.insertAdjacentHTML('afterend', '<form id="data-change-form" onsubmit = "submitDataChange()"></form>');
+// Вставка формы контроля видимости
+wrapper.insertAdjacentHTML('beforeend', '<form id="visibility-form"></form>');
+
+// Вставка формы изменения данных
+wrapper.insertAdjacentHTML('beforeend', '<form id="data-change-form" onsubmit = "submitDataChange()"></form>');
 
 const visibilityForm = document.querySelector('#visibility-form');
 const dataChangeForm = document.querySelector('#data-change-form');
@@ -59,7 +62,7 @@ async function getData(url) {
     <td>${elem.name.firstName}</td>
     <td>${elem.name.lastName}</td>
     <td><div class ='about'>${elem.about}</div></td>
-    <td style = "background-color: ${elem.eyeColor}; font-size: 0;">${elem.eyeColor}</td>
+    <td style = "background-color: ${elem.eyeColor}; font-size: 0; opacity:90%">${elem.eyeColor}</td>
     </tr>`);
   });
   const dataRows = Array.from(table.rows).slice(1);
@@ -152,11 +155,13 @@ function previousPage() {
   setHidden(Array.from(table.rows).slice(1));
 }
 
+// Создание формы с чекбоксами для контроля видимости столбцов
 function createVisibilityForm() {
   Array.from(thead.children).forEach((elem, id) => {
     visibilityForm.insertAdjacentHTML('beforeend', `<input type="checkbox" id="checkbox-${id}" onchange="setVisibility()">
     <label for="checkbox-${id}">${[elem.textContent]}</label><br>`);
   });
+  visibilityForm.insertAdjacentHTML('afterbegin', '<h1 class ="heading">Настроить видимость столбцов</h1>');
   // eslint-disable-next-line no-unused-vars
 }
 
@@ -166,6 +171,8 @@ function setVisibility() {
   const targetId = Array.from(visibilityForm.elements).indexOf(target);
   const dataRows = Array.from(table.rows);
 
+  /* Проходит по всем строкам таблицы и уст. класс hidden всем элементам id которых в строке
+    совпадает с id нажатого чекбокса */
   dataRows.forEach((row) => {
     Array.from(row.children).forEach((cell) => {
       if (Array.from(row.children).indexOf(cell) === targetId) {
@@ -175,39 +182,64 @@ function setVisibility() {
   });
 }
 
+// Создает форму изменения данных
 function createDataChangeForm() {
   Array.from(thead.children).forEach((elem) => {
     dataChangeForm.insertAdjacentHTML('beforeend', `<label>${[elem.textContent]}<textarea class="textarea">`);
   });
   dataChangeForm.insertAdjacentHTML('beforeend', '<input type ="submit"></input>');
+  dataChangeForm.insertAdjacentHTML('afterbegin', '<h1 class ="heading">Изменить данные</h1>');
 }
 
+/* При выборе строки добавляет данные из нее в placeholder соотв. ячеек формы
+  и устанавливает атрибут changable-now на строку */
 function selectRow() {
+  // Удалить класс selected со всех элементов
+  Array.from(tbody.querySelectorAll('tr'))
+    .forEach((row) => row.classList.remove('selected'));
   const target = event.currentTarget;
+  target.classList.add('selected');
   const targetId = Array.from(tbody.children).indexOf(target);
   const textareaArr = Array.from(dataChangeForm.querySelectorAll('textarea'));
+  // Удалить текст в textarea(если есть) и уст. placeholder
   textareaArr.forEach((textarea, id) => {
+    textarea.value = '';
     textarea.setAttribute('placeholder', `${Array.from(target.children)[id].innerText}`);
     dataChangeForm.setAttribute('changable-now', `${targetId}`);
   });
+
+  // Установить высоту textarea в зависимости от placeholder
+  textareaArr.forEach((textarea => {
+    textarea.style.cssText = 'height: 0px';
+    textarea.style.cssText = `height: ${textarea.scrollHeight}px`;
+  }));
 }
 
+// Добавить новые данные в таблицу
 function submitDataChange() {
   event.preventDefault();
+
+  // targetId - Id строки у которой установлен атрибут changable-now
   const targetId = dataChangeForm.getAttribute('changable-now');
+
+  // targetRow - редактируемый <tr>
   const targetRow = Array.from(tbody.children)[targetId];
 
-  const targetTextArr = [];
-  Array.from(targetRow.children).forEach((cell) => targetTextArr.push(cell.innerText));
-
+  // newData - массив с данными, введенными в форму
   const newData = [];
   Array.from(dataChangeForm.querySelectorAll('textarea')).forEach((textarea) => {
     newData.push(textarea.value);
   });
 
+  // Если ничего не добавлено в textarea то игнорируется
   newData.forEach((data, id) => {
     if (data !== '') {
       targetRow.children[id].innerText = data;
+      // Если редактируется цвет, то в зависимости от значения ставится цвет ячейки
+      // !! Нужно вводить валидный цвет CSS (red, blue и.т.д.)
+      if (id === 3) {
+        targetRow.children[id].style.backgroundColor = `${data}`;
+      }
     }
   });
 }
